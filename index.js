@@ -1,67 +1,26 @@
-var blessed = require('blessed');
- 
-// Create a screen object. 
-var screen = blessed.screen({
-  autoPadding: true,
-  smartCSR: true
-});
- 
-screen.title = 'my window title';
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
 
-var layout = blessed.layout({
-  width: '100%',
-  height: '100%',
-  parent: screen,
-})
+var pushers = ['95E33CC97C0D', 'DCC54C3705C1'];
 
-var leftpane = blessed.layout({
-  width: '40%',
-  height: '100%',
-  parent: layout,
+app.get('/', function(req, res){
+  res.sendFile(__dirname + '/index.html');
 });
 
-var rightpane = blessed.layout({
-  width: '60%',
-  height: '100%',
-  parent: layout
+io.on('connection', function(socket){
+  console.log('a user connected');
+  io.emit('known pushers', pushers);
+  socket.on('disconnect', function() {
+    console.log('user disconnected');
+  });
+  socket.on('pusher select', function(mac_addr) {
+    console.log('Pusher Selected, MAC: ' + mac_addr);
+  });
 });
 
-var pusher_list_title = blessed.text({
-  align: 'center',
-  content: 'Detected PixelPushers',
-  parent: leftpane
-}); 
-
-
-var selected_pusher_title = blessed.text({
-  align: 'center',
-  content: 'Selected Pusher MAC: ',
-  parent: rightpane
-}); 
-
-// Create a box perfectly centered horizontally and vertically. 
-var list = blessed.List({
-  parent: leftpane,
-  items: ['CA4E2A8ACE03', '0DA7E89B615A','84D75B9B32EC','E413AF34D41F'],
-  border: {
-    type: 'line'
-  },
-  selectedBg: 'green',
-  mouse: true,
-  keys: true,
-  width: '100%',
+http.listen(3000, function(){
+  console.log('listening on *:3000');
 });
- 
-// Append our box to the screen. 
-screen.append(layout);
- 
-// Quit on Escape, q, or Control-C. 
-screen.key(['escape', 'q', 'C-c'], function(ch, key) {
-  return process.exit(0);
-});
- 
-// Focus our element. 
-list.focus();
- 
-// Render the screen. 
-screen.render();
+
+io.emit('pusher discovered', 'D34DB33F');

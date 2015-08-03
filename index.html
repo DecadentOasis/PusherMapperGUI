@@ -1,0 +1,16 @@
+<!doctype html>
+<html>
+  <head>
+    <title>PixelPusher Tree Mapper Web GUI</title>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+      var socket = io();
+      socket.on('known pushers', function(data) {
+        console.log(data);
+      });
+    </script>
+  </head>
+  <body>
+    
+  </body>
+</html>
