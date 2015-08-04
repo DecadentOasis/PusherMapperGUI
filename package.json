@@ -16,7 +16,7 @@
     "url": "https://github.com/DecadentOasis/PusherMapperGUI/issues"
   },
   "dependencies": {
-    "express": "~4.13.3",
+    "express": "^4.13.3",
     "socket.io": "~1.3.6"
   }
 }
