@@ -5,6 +5,7 @@ app.factory('mySocket', function (socketFactory) {
   var mySocket = socketFactory();
   mySocket.forward('error');
   mySocket.forward('pushers');
+  mySocket.forward('pusher mapping');
   return mySocket;
 });
 
@@ -20,10 +21,19 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     $scope.pushers = data;
   });
 
+  $scope.$on('socket:pusher mapping', function(ev, data) {
+    $scope.mapping = data;
+  });
+
   $scope.getPushers = function() {
     mySocket.emit('list pushers');
   };
 
+  $scope.getMapping = function() {
+    mySocket.emit('get mapping');
+  };
+
   $scope.pushers = {};
   $scope.getPushers();
+  $scope.getMapping();
 });

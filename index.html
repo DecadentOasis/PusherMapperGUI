@@ -9,11 +9,14 @@
   </head>
   <body ng-app="PusherMapperGUI">
     <div ng-controller="IndexCtrl">
-    <div class="pusherlist">
-      <ul>
-        <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
-      </ul>
-    </div>
+      <div class="pusherlist">
+        <ul>
+          <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
+        </ul>
+      </div>
+      <div class="mapping">
+        {{mapping}}
+      </div>
     </div>
   </body>
 </html>

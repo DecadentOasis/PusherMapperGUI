@@ -2,11 +2,14 @@ var express = require('express');
 var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
+var fs = require('fs');
 
 var pushers = {
   '95E33CC97C0D': {},
   'DCC54C3705C1': {}
 };
+
+var mapping;
 
 app.get('/', function(req, res){
   res.sendFile(__dirname + '/index.html');
@@ -28,17 +31,29 @@ io.on('connection', function(socket){
     Object.keys(pushers).forEach(function(key) {
       pushers[key].timestamp = (new Date);
     })
-    /**
-    for (var pusher_idx = 0; pusher_idx < pushers.length; pusher_idx++) {
-      pushers[pusher_idx].timestamp = (new Date);
-
-    } **/
-
-
+    console.log('list pushers called');
     socket.emit('pushers', pushers);
-  })
+  });
+  socket.on('get mapping', function() {
+    console.log('get mapping called');
+    socket.emit('pusher mapping', mapping);
+  });
 });
 
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+var readMappingFromDisk = function() {
+  fs.readFile('mapping.json', 'utf8', function (err, data) {
+    if (err) {
+      console.log(err);
+      return;
+    }
+    mapping = JSON.parse(data);
+    console.log('Read mapping JSON:');
+    console.log(mapping);
+  });
+}
+
+readMappingFromDisk();
