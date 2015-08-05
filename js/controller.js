@@ -34,12 +34,12 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
   };
 
   $scope.getStyle = function(center) {
-    console.log(center);
+
     var w = 800;
     var h = 600;
     var x = (center[0] * (w/2)) + w/2;
     var y = (center[1] * (h/2)) + h/2;
-    console.log(x,y);
+    return {'top': y + 'px', 'left': x + 'px'};
   }
 
   $scope.pushers = {};
