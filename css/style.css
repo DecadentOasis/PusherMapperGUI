@@ -1,7 +1,9 @@
 #forest_preview {
-   position: relative;
+    position: relative;
+    height: 600px;
+    width: 100%;
 }
 
 .fixture {
-	position: absolute;
+    position: absolute;
 }

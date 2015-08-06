@@ -8,25 +8,40 @@
     <script src="/bower_components/angular/angular.min.js"></script>
     <script src="/bower_components/angular-dragdrop/src/angular-dragdrop.min.js"></script>
     <script src="/bower_components/angular-socket-io/socket.min.js"></script>
+    <script src="/bower_components/angular-animate/angular-animate.min.js"></script>
+    <script src="/bower_components/angular-aria/angular-aria.min.js"></script>
+    <script src="/bower_components/angular-material/angular-material.min.js"></script>
     <script src="/js/controller.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
+    <link rel="stylesheet" href="bower_components/angular-material/angular-material.min.css">
+
 </head>
 <body>
 <div ng-controller="IndexCtrl">
-    <div class="pusherlist">
-        <ul>
-            <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
-        </ul>
-    </div>
-    <div id="forest_preview">
-        <div ng-repeat="(key, value) in mapping" class="pusher">
-            <div data-drag="true" ng-repeat="fixture in value" class="fixture" ng-style="getStyle(fixture.center)"
-                 jqyoui-draggable="{onStop: 'stopCallback', containment: 'position'}">
-                Type: {{fixture.type}}<br>
-                Center: {{fixture.center}}
+    <md-toolbar>
+        <div class="md-toolbar-tools">
+            <h2 class="md-flex">Forest Preview</h2>
+        </div>
+    </md-toolbar>
+    <md-content>
+        <div id="forest_preview">
+            <div ng-repeat="(key, value) in mapping" class="pusher">
+                <div data-drag="true" ng-repeat="fixture in value" class="fixture" ng-style="getStyle(fixture.center)"
+                     jqyoui-draggable="{onStop: 'stopCallback', containment: 'position'}">
+                    {{key}}: {{$index}}<br>
+                    {{fixture.type}}<br>
+                    {{fixture.center}}
+                </div>
             </div>
         </div>
-    </div>
+        <div class="pusherlist">
+            Detected Pixelpushers:
+            <ul>
+                <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
+            </ul>
+        </div>
+    </md-content>
+
 </div>
 </body>
 </html>
