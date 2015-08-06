@@ -1,28 +1,32 @@
 <!doctype html>
-<html>
-  <head>
+<html ng-app="PusherMapperGUI">
+<head>
     <title>PixelPusher Tree Mapper Web GUI</title>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/bower_components/jquery-ui/jquery-ui.js"></script>
     <script src="/bower_components/angular/angular.min.js"></script>
+    <script src="/bower_components/angular-dragdrop/src/angular-dragdrop.min.js"></script>
     <script src="/bower_components/angular-socket-io/socket.min.js"></script>
     <script src="/js/controller.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
-  </head>
-  <body ng-app="PusherMapperGUI">
-    <div ng-controller="IndexCtrl">
-      <div class="pusherlist">
+</head>
+<body>
+<div ng-controller="IndexCtrl">
+    <div class="pusherlist">
         <ul>
-          <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
+            <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
         </ul>
-      </div>
-      <div id="forest_preview">
-        <div ng-repeat="(key, value) in mapping" class="pusher">
-          <div ng-repeat="fixture in value" class="fixture" ng-style="getStyle(fixture.center)">
-           Type: {{fixture.type}}
-           Center: {{fixture.center}}
-          </div>
-        </div>
-      </div>
     </div>
-  </body>
+    <div id="forest_preview">
+        <div ng-repeat="(key, value) in mapping" class="pusher">
+            <div data-drag="true" ng-repeat="fixture in value" class="fixture" ng-style="getStyle(fixture.center)"
+                 jqyoui-draggable="{onStop: 'stopCallback', containment: 'position'}">
+                Type: {{fixture.type}}<br>
+                Center: {{fixture.center}}
+            </div>
+        </div>
+    </div>
+</div>
+</body>
 </html>
