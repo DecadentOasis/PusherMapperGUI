@@ -31,7 +31,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             var ctx = canvas.getContext('2d');
             ctx.canvas.width  = window.innerWidth;
             ctx.canvas.height = window.innerHeight;
-            ctx.fillStyle = "rgb(200,0,0)";
+            //ctx.fillStyle = "rgb(200,0,0)";
             angular.forEach(data, function(value, key) {
                 var pusher = value;
                 for (var i = pusher.length - 1; i >= 0; i--) {
@@ -39,10 +39,16 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     var x = coords[0];
                     var y = coords[1];
                     var size = 20;
-                    ctx.fillRect(x-size, y-size, size, size);
+                    //ctx.fillRect(x-size, y-size, size, size);
+                    var circle = new createjs.Shape();
+                    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 20);
+                    circle.x = x;
+                    circle.y = y;
+                    $scope.stage.addChild(circle);
                 };
             });
         }
+        $scope.stage.update();
     });
 
     $scope.getPushers = function () {
@@ -100,5 +106,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     $scope.pushers = {};
     $scope.getPushers();
     $scope.getMapping();
+
+    $scope.stage = new createjs.Stage("forest-preview");
 
 });
