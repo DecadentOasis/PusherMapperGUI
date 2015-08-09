@@ -10,9 +10,6 @@
     <script src="/bower_components/angular-socket-io/socket.min.js"></script>
     <script src="/bower_components/angular-animate/angular-animate.min.js"></script>
     <script src="/bower_components/angular-aria/angular-aria.min.js"></script>
-    <script src="/bower_components/underscore/underscore-min.js"></script>
-    <script src="/bower_components/backbone/backbone-min.js"></script>
-    <script src="/bower_components/two/src/two.js"></script>
     <script src="/bower_components/angular-material/angular-material.min.js"></script>
     <script src="/js/controller.js"></script>
     <link rel="stylesheet" type="text/css" href="/css/style.css">
@@ -27,16 +24,7 @@
         </div>
     </md-toolbar>
     <md-content>
-        <div id="forest_preview">
-            <div ng-repeat="(key, value) in mapping" class="pusher">
-                <div data-drag="true" ng-repeat="fixture in value" class="fixture" ng-style="getStyle(fixture.center)"
-                     jqyoui-draggable="{onStop: 'stopCallback', containment: 'position'}">
-                    {{key}}: {{$index}}<br>
-                    {{fixture.type}}<br>
-                    {{fixture.center}}
-                </div>
-            </div>
-        </div>
+        <canvas id="forest-preview" width="800" height="600"></canvas>
         <div class="pusherlist">
             Detected Pixelpushers:
             <ul>
