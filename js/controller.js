@@ -24,6 +24,14 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     });
 
+    var treePressMove = function(evt) {
+        evt.target.x = evt.stageX;
+        evt.target.y = evt.stageY;
+        $scope.stage.update();
+    }
+
+    var treePressUp = function(evt) { console.log("up"); }
+
     $scope.$on('socket:pusher mapping', function (ev, data) {
         $scope.mapping = data;
         var canvas = document.getElementById('forest-preview');
@@ -44,6 +52,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 20);
                     circle.x = x;
                     circle.y = y;
+                    circle.on("pressmove", treePressMove);
+                    circle.on("pressup", treePressUp);
                     $scope.stage.addChild(circle);
                 };
             });
