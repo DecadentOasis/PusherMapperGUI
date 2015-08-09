@@ -45,13 +45,13 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     var clusterStyle = {
       cluster6: {
-        color: "DeepSkyBlue",
+        color: "rgba(91,189,225,0.5)",
         size: 30},
       cluster8: {
-        color: "RoyalBlue",
+        color: "rgba(0,35,200,0.5)",
         size: 20},
       densecluster8: {
-        color: "Red",
+        color: "rgba(255,0,0,0.5)",
         size: 60}}
 
     $scope.$on('socket:pusher mapping', function (ev, data) {
@@ -60,7 +60,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         if (canvas.getContext){
             var ctx = canvas.getContext('2d');
             ctx.canvas.width  = window.innerWidth;
-            ctx.canvas.height = window.innerHeight;
+            ctx.canvas.height = window.innerHeight - 100;
             //ctx.fillStyle = "rgb(200,0,0)";
             angular.forEach(data, function(value, key) {
                 var pusher = value;
@@ -96,23 +96,6 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         mySocket.emit('get mapping');
     };
 
-    $scope.stopCallback = function (event, ui) {
-        var w = $scope.getForestWidth();
-        var h = $scope.getForestHeight();;
-        var l = ui.position.left;
-        var t = ui.position.top;
-        var x = Math.round((l - (w / 2)) / (w / 2) * 100) / 100;
-        var y = Math.round((t - (h / 2)) / (h / 2) * 100) / 100;
-        var mac_addr = this.$parent.key;
-        var fixture_type = this.fixture.type;
-        this.fixture.center[0] = x;
-        this.fixture.center[1] = y;
-        var strip_no = this.$index;
-        console.log('%d,%d: %f,%f', ui.offset.left, ui.offset.top, x, y);
-        console.log(this.fixture);
-        mySocket.emit('save tree', mac_addr, strip_no, fixture_type, x, y);
-        $scope.$apply();
-    };
 
     var getRelativeCoords = function(coords, ctx) {
         var w = ctx.canvas.width;
@@ -121,16 +104,6 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         var y = (coords[1] * (h / 2)) + h / 2;
         return [x, y];
     };
-
-    $scope.getStyle = function (center) {
-
-        var w = $scope.getForestWidth();
-        var h = $scope.getForestHeight();;
-        var x = (center[0] * (w / 2)) + w / 2;
-        var y = (center[1] * (h / 2)) + h / 2;
-        return {'top': y + 'px', 'left': x + 'px'};
-    };
-
 
     $scope.pushers = {};
     $scope.getPushers();

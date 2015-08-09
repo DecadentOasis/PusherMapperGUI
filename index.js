@@ -13,9 +13,8 @@ pixelpusher.on('error', function (err) {
 });
 
 pixelpusher.on('discover', function (controller) {
-    console.log(controller);
     var mac_addr = controller.params.macAddress.replace(/\:/g,'').slice(5);
-    pushers[mac_addr] = controller.pixelpusher;
+    pushers[mac_addr] = controller.params.pixelpusher;
     io.emit('pushers', pushers);
 });
 
@@ -28,6 +27,7 @@ app.get('/', function (req, res) {
 app.use('/bower_components', express.static(__dirname + '/bower_components'));
 app.use('/js', express.static(__dirname + '/js'));
 app.use('/css', express.static(__dirname + '/css'));
+app.use('/img', express.static(__dirname + '/img'));
 
 
 io.on('connection', function (socket) {
@@ -51,6 +51,7 @@ io.on('connection', function (socket) {
 
     socket.on('list pushers', function () {
         console.log('list pushers called');
+        console.log(pushers);
         socket.emit('pushers', pushers);
     });
 

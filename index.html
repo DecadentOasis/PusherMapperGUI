@@ -18,13 +18,16 @@
 
 </head>
 <body>
-<div ng-controller="IndexCtrl">
+<div ng-controller="IndexCtrl" layout="column" style="padding-bottom: 15px;">
     <md-toolbar>
         <div class="md-toolbar-tools">
+            <md-button class="md-icon-button" aria-label="Settings">
+                <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
+            </md-button>
             <h2 class="md-flex">Forest Preview</h2>
         </div>
     </md-toolbar>
-    <md-content>
+    <md-content layout-padding style="height: 600px;padding: 24px;">
         <canvas id="forest-preview" width="800" height="600"></canvas>
         <div class="pusherlist">
             Detected Pixelpushers:
@@ -33,7 +36,6 @@
             </ul>
         </div>
     </md-content>
-
 </div>
 </body>
 </html>
