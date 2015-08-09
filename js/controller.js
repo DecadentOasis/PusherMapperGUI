@@ -30,7 +30,29 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         $scope.stage.update();
     }
 
-    var treePressUp = function(evt) { console.log("up"); }
+    var treePressUp = function(evt) {
+        var w = this.parent.canvas.clientWidth;
+        var h = this.parent.canvas.clientHeight;
+        var l = evt.stageX;
+        var t = evt.stageY;
+        var x = Math.round((l - (w / 2)) / (w / 2) * 100) / 100;
+        var y = Math.round((t - (h / 2)) / (h / 2) * 100) / 100;
+        var mac_addr = this.mac_addr;
+        var fixture_type = this.type;
+        var strip_no = this.strip_no;
+        mySocket.emit('save tree', mac_addr, strip_no, fixture_type, x, y)
+    }
+
+    var clusterStyle = {
+      cluster6: {
+        color: "DeepSkyBlue",
+        size: 30},
+      cluster8: {
+        color: "RoyalBlue",
+        size: 20},
+      densecluster8: {
+        color: "Red",
+        size: 60}}
 
     $scope.$on('socket:pusher mapping', function (ev, data) {
         $scope.mapping = data;
@@ -49,9 +71,14 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     var size = 20;
                     //ctx.fillRect(x-size, y-size, size, size);
                     var circle = new createjs.Shape();
-                    circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 20);
+                    var color = clusterStyle[pusher[i].type].color;
+                    var dia = clusterStyle[pusher[i].type].size;
+                    circle.graphics.beginFill(color).drawCircle(0, 0, dia);
                     circle.x = x;
                     circle.y = y;
+                    circle.mac_addr = key;
+                    circle.type = pusher[i].type;
+                    circle.strip_no = i;
                     circle.on("pressmove", treePressMove);
                     circle.on("pressup", treePressUp);
                     $scope.stage.addChild(circle);
@@ -67,14 +94,6 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     $scope.getMapping = function () {
         mySocket.emit('get mapping');
-    };
-
-    $scope.getForestWidth = function () {
-        return document.getElementById('forest_preview').clientWidth;
-    };
-
-    $scope.getForestHeight = function () {
-        return document.getElementById('forest_preview').clientHeight;
     };
 
     $scope.stopCallback = function (event, ui) {

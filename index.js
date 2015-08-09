@@ -3,11 +3,21 @@ var app = express();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var fs = require('fs');
+var PixelPusher = require('heroic-pixel-pusher');
 
-var pushers = {
-    '95E33CC97C0D': {},
-    'DCC54C3705C1': {}
-};
+var pixelpusher = new PixelPusher();
+var pushers = {};
+
+pixelpusher.on('error', function (err) {
+    console.log('PixelPusher Error: ' + err.message);
+});
+
+pixelpusher.on('discover', function (controller) {
+    console.log(controller);
+    var mac_addr = controller.params.macAddress.replace(/\:/g,'').slice(5);
+    pushers[mac_addr] = controller.pixelpusher;
+    io.emit('pushers', pushers);
+});
 
 var mapping;
 
@@ -40,9 +50,6 @@ io.on('connection', function (socket) {
     });
 
     socket.on('list pushers', function () {
-        Object.keys(pushers).forEach(function (key) {
-            pushers[key].timestamp = (new Date);
-        })
         console.log('list pushers called');
         socket.emit('pushers', pushers);
     });
