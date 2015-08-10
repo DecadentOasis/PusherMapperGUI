@@ -25,39 +25,66 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     });
 
+    var KEYCODE_KEYR = 82;
+
+    var MODES = {
+        DRAG: 0,
+        ROTATE: 1
+    };
+
+    $scope.editMode = MODES.DRAG;
+
+    var keyPressed = function (evt) {
+        switch (evt.keyCode) {
+            case KEYCODE_KEYR:
+                $scope.editMode = MODES.ROTATE;
+                break;
+        }
+    };
+
+
     var treePressMove = function (evt) {
-        if (evt.target.selected) {
-            evt.target.x = evt.stageX;
-            evt.target.y = evt.stageY;
+        if (evt.currentTarget.selected) {
+            switch ($scope.editMode) {
+                case MODES.DRAG:
+                    evt.currentTarget.x = evt.stageX;
+                    evt.currentTarget.y = evt.stageY;
+                    break;
+                case MODES.ROTATE:
+                    evt.currentTarget.rotation = 360 * (evt.stageY / this.parent.canvas.clientHeight);
+                    break;
+            }
             $scope.stage.update();
         }
-    }
+    };
 
     var treePressUp = function (evt) {
+        var l = evt.currentTarget.x;
+        var t = evt.currentTarget.y;
+        var rot = evt.currentTarget.rotation;
+
         var w = this.parent.canvas.clientWidth;
         var h = this.parent.canvas.clientHeight;
-        var l = evt.stageX;
-        var t = evt.stageY;
         var x = Math.round((l - (w / 2)) / (w / 2) * 100) / 100;
         var y = Math.round((t - (h / 2)) / (h / 2) * 100) / 100;
         var mac_addr = this.mac_addr;
         var fixture_type = this.type;
         var strip_no = this.strip_no;
-        mySocket.emit('save tree', mac_addr, strip_no, fixture_type, x, y);
-    }
+        mySocket.emit('save tree', mac_addr, strip_no, fixture_type, x, y, rot);
+    };
 
     var treeClick = function (evt) {
         console.log(evt);
-        if (evt.target.selected == undefined || evt.target.selected == false) {
-            evt.target.selected = true;
-            evt.target.saved_alpha = evt.target.alpha;
-            evt.target.alpha = 1;
+        if (evt.currentTarget.selected == undefined || evt.currentTarget.selected == false) {
+            evt.currentTarget.selected = true;
+            evt.currentTarget.saved_alpha = evt.currentTarget.alpha;
+            evt.currentTarget.alpha = 1;
         } else {
-            evt.target.selected = false;
-            evt.target.alpha = evt.target.saved_alpha;
+            evt.currentTarget.selected = false;
+            evt.currentTarget.alpha = evt.currentTarget.saved_alpha;
         }
         $scope.stage.update();
-    }
+    };
 
     var updateField = function () {
         $scope.stage.removeAllChildren();
@@ -74,44 +101,48 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     var x = coords[0];
                     var y = coords[1];
                     var size = 20;
-                    //ctx.fillRect(x-size, y-size, size, size);
+                    var dragger = new createjs.Container();
+                    dragger.x = x;
+                    dragger.y = y;
                     var circle = new createjs.Shape();
                     var color = clusterStyle[pusher[i].type].color;
 
                     var dia = clusterStyle[pusher[i].type].size;
                     circle.graphics.beginFill(color).drawCircle(0, 0, dia);
                     if (!(key in $scope.pushers)) {
-                        circle.alpha = 0.5;
+                        dragger.alpha = 0.5;
                     }
-                    circle.x = x;
-                    circle.y = y;
-                    circle.mac_addr = key;
-                    circle.type = pusher[i].type;
-                    circle.strip_no = i;
-                    circle.on("pressmove", treePressMove);
-                    circle.on("pressup", treePressUp);
-                    circle.on("click", treeClick);
+                    dragger.mac_addr = key;
+                    dragger.type = pusher[i].type;
+                    dragger.strip_no = i;
+                    dragger.rotation = pusher[i].rotation;
+                    dragger.on("pressmove", treePressMove);
+                    dragger.on("pressup", treePressUp);
+                    dragger.on("click", treeClick);
                     circle.shadow = new createjs.Shadow("rgba(0,0,0,0.4)", 5, 5, 10);
-                    $scope.stage.addChild(circle);
+                    var label = new createjs.Text(key.slice(2).toUpperCase() + " " + i, "bold 14px Verdana", "#FFFFFF");
+                    label.textAlign = "center";
+                    label.y = -7;
+                    dragger.addChild(circle, label);
+                    $scope.stage.addChild(dragger);
                 }
-                ;
             });
         }
         $scope.stage.update();
-    }
+    };
 
     var clusterStyle = {
         cluster6: {
             color: "rgba(91,189,225,0.8)",
-            size: 30
+            size: 50
         },
         cluster8: {
             color: "rgba(0,35,200,0.8)",
-            size: 20
+            size: 60
         },
         densecluster8: {
             color: "rgba(255,0,0,0.8)",
-            size: 60
+            size: 90
         }
     };
 
@@ -142,5 +173,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     $scope.getMapping();
 
     $scope.stage = new createjs.Stage("forest-preview");
+
+    document.onkeydown = keyPressed;
 
 });

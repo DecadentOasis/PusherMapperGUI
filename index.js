@@ -40,11 +40,12 @@ io.on('connection', function (socket) {
         console.log('Pusher Selected, MAC: ' + mac_addr);
     });
 
-    socket.on('save tree', function (mac_addr, strip_no, type, x, y) {
-        console.log('Tree save requested. MAC: %s, Strip#: %s, type: %s, (%s, %s)', mac_addr, strip_no, type, x, y);
+    socket.on('save tree', function (mac_addr, strip_no, type, x, y, rot) {
+        console.log('Tree save requested. MAC: %s, Strip#: %s, type: %s, (%s, %s) rot: %s', mac_addr, strip_no, type, x, y, rot);
         var fixture = mapping[mac_addr][strip_no];
         fixture.type = type;
         fixture.center = [x, y];
+        fixture.rotation = rot;
         writeMappingToDisk();
         console.log('Tree saved!');
     });
