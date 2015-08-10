@@ -13,7 +13,7 @@ pixelpusher.on('error', function (err) {
 });
 
 pixelpusher.on('discover', function (controller) {
-    var mac_addr = controller.params.macAddress.replace(/\:/g,'').slice(5);
+    var mac_addr = controller.params.macAddress.replace(/\:/g, '').slice(5);
     pushers[mac_addr] = controller.params.pixelpusher;
     io.emit('pushers', pushers);
 });
@@ -81,8 +81,8 @@ var readMappingFromDisk = function () {
 
 var writeMappingToDisk = function () {
 
-    fs.writeFile(mappingFilename, JSON.stringify(mapping, null, 4), function(err) {
-        if(err) {
+    fs.writeFile(mappingFilename, JSON.stringify(mapping, null, 4), function (err) {
+        if (err) {
             console.log(err);
         } else {
             console.log("JSON saved to " + mappingFilename);
