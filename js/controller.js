@@ -25,23 +25,68 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     });
 
-    var KEYCODE_KEYR = 82;
+    var KEYCODE = {
+        KEYR: 82,
+        KEYM: 77,
+        ESC: 27
+    };
 
     var MODES = {
         DRAG: 0,
-        ROTATE: 1
+        ROTATE: 1,
+        LB_MV: 2
     };
+
+    var KEY_MODES = [];
+
+    KEY_MODES[KEYCODE.KEYR] = MODES.ROTATE;
+    KEY_MODES[KEYCODE.KEYM] = MODES.LB_MV;
+
+    var lbSz = 200;
 
     $scope.editMode = MODES.DRAG;
 
+    $scope.lastSelected = null;
+
     var keyPressed = function (evt) {
-        switch (evt.keyCode) {
-            case KEYCODE_KEYR:
-                $scope.editMode = MODES.ROTATE;
+        var code = evt.keyCode;
+        if (code in KEY_MODES) {
+            $scope.editMode = KEY_MODES[code];
+        }
+        switch (code) {
+            case KEYCODE.ESC:
+                unselectAll();
+                $scope.editMode = MODES.DRAG;
                 break;
         }
     };
 
+    var unselectAll = function () {
+        for (var child = 0; child < $scope.stage.children.length; child++) {
+            var c = $scope.stage.children[child];
+            c.dispatchEvent("cancel");
+        }
+    };
+
+    var treeCancel = function (evt) {
+        if (evt.currentTarget.saved_alpha == undefined) {
+            return;
+        }
+        evt.currentTarget.selected = false;
+        evt.currentTarget.alpha = evt.currentTarget.saved_alpha;
+        $scope.stage.update();
+    };
+
+    var treeSelect = function (evt) {
+        if ($scope.lastSelected != null) {
+            $scope.lastSelected.dispatchEvent("cancel");
+        }
+        evt.currentTarget.selected = true;
+        evt.currentTarget.saved_alpha = evt.currentTarget.alpha;
+        evt.currentTarget.alpha = 1;
+        $scope.lastSelected = evt.currentTarget;
+        $scope.stage.update();
+    };
 
     var treePressMove = function (evt) {
         if (evt.currentTarget.selected) {
@@ -71,19 +116,24 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         var fixture_type = this.type;
         var strip_no = this.strip_no;
         mySocket.emit('save tree', mac_addr, strip_no, fixture_type, x, y, rot);
+        //evt.currentTarget.dispatchEvent("cancel");
     };
 
     var treeClick = function (evt) {
-        console.log(evt);
         if (evt.currentTarget.selected == undefined || evt.currentTarget.selected == false) {
-            evt.currentTarget.selected = true;
-            evt.currentTarget.saved_alpha = evt.currentTarget.alpha;
-            evt.currentTarget.alpha = 1;
-        } else {
-            evt.currentTarget.selected = false;
-            evt.currentTarget.alpha = evt.currentTarget.saved_alpha;
+            evt.currentTarget.dispatchEvent("select");
         }
-        $scope.stage.update();
+    };
+
+    var stageMouseMove = function (evt) {
+        if ($scope.lightDragger == undefined) {
+            return
+        }
+        if ($scope.editMode == MODES.LB_MV) {
+            $scope.lightDragger.x = evt.stageX;
+            $scope.lightDragger.y = evt.stageY;
+            $scope.stage.update();
+        }
     };
 
     var updateField = function () {
@@ -93,7 +143,18 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             var ctx = canvas.getContext('2d');
             ctx.canvas.width = window.innerWidth;
             ctx.canvas.height = window.innerHeight - 100;
-            //ctx.fillStyle = "rgb(200,0,0)";
+            $scope.lightDragger = new createjs.Container();
+            $scope.lightDragger.x = ctx.canvas.width / 2;
+            $scope.lightDragger.y = ctx.canvas.height / 2;
+
+            var lightBox = new createjs.Shape();
+            lightBox.graphics
+                .beginFill("rgba(255,255,255,0.4")
+                .beginStroke("black")
+                .drawRect(-lbSz / 2, -lbSz / 2, lbSz, lbSz);
+            $scope.lightDragger.addChild(lightBox);
+            $scope.stage.addChild($scope.lightDragger);
+
             angular.forEach($scope.mapping, function (value, key) {
                 var pusher = value;
                 for (var i = pusher.length - 1; i >= 0; i--) {
@@ -119,6 +180,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     dragger.on("pressmove", treePressMove);
                     dragger.on("pressup", treePressUp);
                     dragger.on("click", treeClick);
+                    dragger.on("cancel", treeCancel);
+                    dragger.on("select", treeSelect);
                     circle.shadow = new createjs.Shadow("rgba(0,0,0,0.4)", 5, 5, 10);
                     var label = new createjs.Text(key.slice(2).toUpperCase() + " " + i, "bold 14px Verdana", "#FFFFFF");
                     label.textAlign = "center";
@@ -127,6 +190,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     $scope.stage.addChild(dragger);
                 }
             });
+            $scope.stage.addChild($scope.lightDragger);
         }
         $scope.stage.update();
     };
@@ -173,7 +237,9 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     $scope.getMapping();
 
     $scope.stage = new createjs.Stage("forest-preview");
+    $scope.stage.on("stagemousemove", stageMouseMove);
 
     document.onkeydown = keyPressed;
 
-});
+})
+;

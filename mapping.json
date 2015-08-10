@@ -10,9 +10,10 @@
         {
             "type": "cluster6",
             "center": [
-                0.25,
-                0.15
-            ]
+                0.27,
+                0.14
+            ],
+            "rotation": null
         },
         {
             "type": "cluster6",
@@ -96,16 +97,17 @@
         {
             "type": "cluster8",
             "center": [
-                -0.8,
-                0.75
+                -0.75,
+                -0.81
             ]
         },
         {
             "type": "cluster8",
             "center": [
-                -0.65,
-                0.4
-            ]
+                -0.7,
+                0.52
+            ],
+            "rotation": 347.6923076923077
         },
         {
             "type": "cluster8",
@@ -127,8 +129,9 @@
             "type": "cluster6",
             "center": [
                 -0.25,
-                -0.85
-            ]
+                -0.66
+            ],
+            "rotation": null
         },
         {
             "type": "cluster6",
@@ -154,32 +157,35 @@
         {
             "type": "cluster8",
             "center": [
-                -0.8,
-                -0.55
+                -0.82,
+                -0.43
             ]
         },
         {
             "type": "cluster8",
             "center": [
-                -0.6,
-                -0.7
-            ]
+                -0.53,
+                -0.72
+            ],
+            "rotation": 61.53846153846154
         },
         {
             "type": "cluster8",
             "center": [
-                -0.2,
-                -0.45
-            ]
+                -0.31,
+                -0.31
+            ],
+            "rotation": null
         }
     ],
     "0xface00": [
         {
             "type": "cluster6",
             "center": [
-                0.15,
-                -0.75
-            ]
+                0.21,
+                -0.37
+            ],
+            "rotation": null
         },
         {
             "type": "cluster6",
@@ -193,7 +199,8 @@
             "center": [
                 0.35,
                 -0.65
-            ]
+            ],
+            "rotation": null
         },
         {
             "type": "cluster6",
@@ -205,55 +212,62 @@
         {
             "type": "cluster8",
             "center": [
-                0.15,
-                -0.5
-            ]
+                0.19,
+                -0.14
+            ],
+            "rotation": null
         },
         {
             "type": "cluster8",
             "center": [
                 0.55,
                 -0.8
-            ]
+            ],
+            "rotation": null
         },
         {
             "type": "cluster8",
             "center": [
                 0.7,
                 -0.6
-            ]
+            ],
+            "rotation": null
         },
         {
             "type": "cluster8",
             "center": [
                 0.45,
                 -0.3
-            ]
+            ],
+            "rotation": null
         }
     ],
     "0x2c2134": [
         {
             "type": "densecluster8",
             "center": [
-                0.05,
-                0.05
-            ]
+                -0.26,
+                0.08
+            ],
+            "rotation": 203.95604395604394
         },
         {
             "type": "densecluster8",
             "center": [
-                -0.25,
-                -0.05
-            ]
+                0.03,
+                0.21
+            ],
+            "rotation": null
         }
     ],
     "0xa1b2c3": [
         {
             "type": "densecluster8",
             "center": [
-                0,
-                -0.2
-            ]
+                -0.02,
+                -0.25
+            ],
+            "rotation": null
         }
     ]
 }
