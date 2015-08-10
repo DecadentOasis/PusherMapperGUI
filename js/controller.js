@@ -136,6 +136,59 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         }
     };
 
+    var createCluster = function (d, order, num_arms, pixel_spacing, pixel_size) {
+        var inner_pixel_radius = 1.5 * pixel_spacing;
+        for (var arm = 0; arm < num_arms; arm++) {
+            var theta = (arm / num_arms) * (2 * Math.PI);
+            for (var ord_idx = 0; ord_idx < order.length; ord_idx++) {
+                var pixel_index = order[ord_idx];
+                var distance_from_center = inner_pixel_radius + (pixel_index * pixel_spacing);
+                var x = Math.cos(theta) * distance_from_center;
+                var y = Math.sin(theta) * distance_from_center;
+
+                var led = new createjs.Shape();
+
+                led.graphics
+                    .beginFill("black")
+                    .drawRect(x - (pixel_size / 2), y - (pixel_size / 2), pixel_size, pixel_size);
+                d.addChild(led);
+            }
+        }
+    };
+
+    var createCluster6 = function (d) {
+        var order = [0, 2, 1];
+        var num_arms = 6;
+        var pixel_spacing = 12;
+        var pixel_size = 5;
+        createCluster(d, order, num_arms, pixel_spacing, pixel_size);
+    };
+
+    var createCluster8 = function (d) {
+        var order = [0, 2, 3, 1];
+        var num_arms = 8;
+        var pixel_spacing = 12;
+        var pixel_size = 5;
+        createCluster(d, order, num_arms, pixel_spacing, pixel_size);
+    };
+
+    var createDenseCluster8 = function (d) {
+        var led_distance = 1;
+        var pixel_size = 1;
+        for (var rot = 0; rot < 8; rot++) {
+            for (var dist = 0; dist < 120; dist++) {
+                var x = (Math.cos(rot * Math.PI * 2 / 8) * led_distance * (dist + 10));
+                var y = (Math.sin(rot * Math.PI * 2 / 8) * led_distance * (dist + 10));
+                var led = new createjs.Shape();
+
+                led.graphics
+                    .beginFill("black")
+                    .drawRect(x - (pixel_size / 2), y - (pixel_size / 2), pixel_size, pixel_size);
+                d.addChild(led);
+            }
+        }
+    }
+
     var updateField = function () {
         $scope.stage.removeAllChildren();
         var canvas = document.getElementById('forest-preview');
@@ -158,7 +211,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             angular.forEach($scope.mapping, function (value, key) {
                 var pusher = value;
                 for (var i = pusher.length - 1; i >= 0; i--) {
-                    var coords = getRelativeCoords(pusher[i].center, ctx);
+                    var strip = pusher[i];
+                    var coords = getRelativeCoords(strip.center, ctx);
                     var x = coords[0];
                     var y = coords[1];
                     var size = 20;
@@ -166,17 +220,18 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     dragger.x = x;
                     dragger.y = y;
                     var circle = new createjs.Shape();
-                    var color = clusterStyle[pusher[i].type].color;
+                    var style = clusterStyle[strip.type];
+                    var color = style.color;
 
-                    var dia = clusterStyle[pusher[i].type].size;
+                    var dia = style.size;
                     circle.graphics.beginFill(color).drawCircle(0, 0, dia);
                     if (!(key in $scope.pushers)) {
                         dragger.alpha = 0.5;
                     }
                     dragger.mac_addr = key;
-                    dragger.type = pusher[i].type;
+                    dragger.type = strip.type;
                     dragger.strip_no = i;
-                    dragger.rotation = pusher[i].rotation;
+                    dragger.rotation = strip.rotation;
                     dragger.on("pressmove", treePressMove);
                     dragger.on("pressup", treePressUp);
                     dragger.on("click", treeClick);
@@ -186,7 +241,11 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     var label = new createjs.Text(key.slice(2).toUpperCase() + " " + i, "bold 14px Verdana", "#FFFFFF");
                     label.textAlign = "center";
                     label.y = -7;
-                    dragger.addChild(circle, label);
+                    dragger.addChild(circle);
+                    if (style.drawFn != undefined) {
+                        style.drawFn(dragger);
+                    }
+                    dragger.addChild(label);
                     $scope.stage.addChild(dragger);
                 }
             });
@@ -198,15 +257,18 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     var clusterStyle = {
         cluster6: {
             color: "rgba(91,189,225,0.8)",
-            size: 50
+            size: 50,
+            drawFn: createCluster6
         },
         cluster8: {
             color: "rgba(0,35,200,0.8)",
-            size: 60
+            size: 60,
+            drawFn: createCluster8
         },
         densecluster8: {
             color: "rgba(255,0,0,0.8)",
-            size: 90
+            size: 130,
+            drawFn: createDenseCluster8
         }
     };
 
