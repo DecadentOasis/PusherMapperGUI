@@ -60,6 +60,10 @@ io.on('connection', function (socket) {
         console.log('get mapping called');
         socket.emit('pusher mapping', mapping);
     });
+
+    socket.on('sc', function (ledColors) {
+        console.log(ledColors);
+    })
 });
 
 http.listen(3000, function () {

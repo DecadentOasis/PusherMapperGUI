@@ -158,7 +158,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         }
     };
 
-    var createLed = function (d, x, y, size) {
+    var createLed = function (d, x, y, size, pixel_no) {
         var led = new createjs.Shape();
 
 
@@ -167,11 +167,13 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             .drawRect(x - (size / 2), y - (size / 2), size, size);
         led.xpos = (x - (size / 2));
         led.ypos = (y - (size / 2));
+        led.pixel_no = pixel_no;
         d.addChild(led);
         $scope.leds.push(led);
     }
 
     var createCluster = function (d, order, num_arms, pixel_spacing, pixel_size) {
+        var pixel_no = 0;
         var inner_pixel_radius = 1.5 * pixel_spacing;
         for (var arm = 0; arm < num_arms; arm++) {
             var theta = (arm / num_arms) * (2 * Math.PI);
@@ -180,7 +182,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                 var distance_from_center = inner_pixel_radius + (pixel_index * pixel_spacing);
                 var x = Math.cos(theta) * distance_from_center;
                 var y = Math.sin(theta) * distance_from_center;
-                createLed(d, x, y, pixel_size);
+                createLed(d, x, y, pixel_size, pixel_no);
+                pixel_no++;
             }
         }
     };
@@ -204,11 +207,13 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     var createDenseCluster8 = function (d) {
         var led_distance = 1;
         var pixel_size = 1;
+        var pixel_no = 0;
         for (var rot = 0; rot < 8; rot++) {
             for (var dist = 0; dist < 120; dist++) {
                 var x = (Math.cos(rot * Math.PI * 2 / 8) * led_distance * (dist + 10));
                 var y = (Math.sin(rot * Math.PI * 2 / 8) * led_distance * (dist + 10));
-                createLed(d, x, y, pixel_size);
+                createLed(d, x, y, pixel_size, pixel_no);
+                pixel_no++;
             }
         }
     }
@@ -327,6 +332,34 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     $scope.stage.on("stagemousemove", stageMouseMove);
 
     document.onkeydown = keyPressed;
+
+    createjs.Ticker.setInterval(500);
+    createjs.Ticker.addEventListener("tick", handleTick);
+
+
+    function handleTick(event) {
+        // Actions carried out each tick (aka frame)
+        if (!event.paused) {
+            var ledColors = {};
+            for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
+                var led = $scope.leds[led_idx];
+                var macAddr = led.parent.mac_addr;
+                var stripNo = led.parent.strip_no;
+                var pixelNo = led.pixel_no;
+                if (!(macAddr in ledColors)) {
+                    ledColors[macAddr] = [];
+                }
+                if (!(stripNo in ledColors[macAddr])) {
+                    ledColors[macAddr][stripNo] = [];
+                }
+                var c = led.graphics._fill.style == 'black' ? 0 : 1;
+                ledColors[macAddr][stripNo][pixelNo] = c;
+
+            }
+            mySocket.emit("sc", ledColors);
+
+        }
+    }
 
 })
 ;
