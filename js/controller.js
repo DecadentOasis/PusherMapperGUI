@@ -182,7 +182,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     };
 
     var createCluster6 = function (d) {
-        var order = [0, 2, 1];
+        var order = [0, 2, 3, 1];
         var num_arms = 6;
         var pixel_spacing = 12;
         var pixel_size = 5;
@@ -190,7 +190,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     };
 
     var createCluster8 = function (d) {
-        var order = [0, 2, 3, 1];
+        var order = [0, 2, 1];
         var num_arms = 8;
         var pixel_spacing = 12;
         var pixel_size = 5;
@@ -278,7 +278,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     var clusterStyle = {
         cluster6: {
             color: "rgba(91,189,225,0.8)",
-            size: 50,
+            size: 60,
             drawFn: createCluster6
         },
         cluster8: {
