@@ -101,6 +101,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     evt.currentTarget.rotation = 360 * (evt.stageY / this.parent.canvas.clientHeight);
                     break;
             }
+            recalculateOcclusion();
             $scope.stage.update();
         }
     };
@@ -127,6 +128,23 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         }
     };
 
+    var recalculateOcclusion = function () {
+        for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
+            var led = $scope.leds[led_idx];
+            var led_x = led.parent.x + led.xpos;
+            var led_y = led.parent.y + led.ypos;
+            var bounds = $scope.lightDragger.getTransformedBounds();
+
+            if (led_x > bounds.x && led_x < bounds.x + bounds.width && led_y > bounds.y && led_y < bounds.y + bounds.height) {
+                //led.alpha = 0;
+                led.graphics._fill.style = '#FFFFFF';
+            } else {
+                //led.alpha = 1;
+                led.graphics._fill.style = '#000000';
+            }
+        }
+    };
+
     var stageMouseMove = function (evt) {
         if ($scope.lightDragger == undefined) {
             return
@@ -136,20 +154,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             var y = evt.stageY;
             $scope.lightDragger.x = x;
             $scope.lightDragger.y = y;
-            for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
-                var led = $scope.leds[led_idx];
-                var led_x = led.parent.x + led.xpos;
-                var led_y = led.parent.y + led.ypos;
-                var bounds = $scope.lightDragger.getTransformedBounds();
-
-                if (led_x > bounds.x && led_x < bounds.x + bounds.width && led_y > bounds.y && led_y < bounds.y + bounds.height) {
-                    //led.alpha = 0;
-                    led.graphics._fill.style = '#FFFFFF';
-                } else {
-                    //led.alpha = 1;
-                    led.graphics._fill.style = '#000000';
-                }
-            }
+            recalculateOcclusion();
             $scope.stage.update();
         }
     };
