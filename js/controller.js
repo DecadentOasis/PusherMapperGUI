@@ -131,11 +131,10 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     var recalculateOcclusion = function () {
         for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
             var led = $scope.leds[led_idx];
-            var led_x = led.parent.x + led.xpos;
-            var led_y = led.parent.y + led.ypos;
+            var pt = led.localToGlobal(led.xpos, led.ypos);
             var bounds = $scope.lightDragger.getTransformedBounds();
 
-            if (led_x > bounds.x && led_x < bounds.x + bounds.width && led_y > bounds.y && led_y < bounds.y + bounds.height) {
+            if (pt.x > bounds.x && pt.x < bounds.x + bounds.width && pt.y > bounds.y && pt.y < bounds.y + bounds.height) {
                 //led.alpha = 0;
                 led.graphics._fill.style = '#FFFFFF';
             } else {
