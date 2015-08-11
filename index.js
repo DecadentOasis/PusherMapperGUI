@@ -13,7 +13,7 @@ pixelpusher.on('error', function (err) {
 });
 
 pixelpusher.on('discover', function (controller) {
-    var mac_addr = controller.params.macAddress.replace(/\:/g, '').slice(5);
+    var mac_addr = controller.params.macAddress.replace(/\:/g, '').slice(6);
     pushers[mac_addr] = controller.params.pixelpusher;
     io.emit('pushers', pushers);
 });
