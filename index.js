@@ -62,7 +62,16 @@ io.on('connection', function (socket) {
     });
 
     socket.on('sc', function (ledColors) {
-        console.log(ledColors);
+        Object.keys(ledColors).forEach(function (key) {
+            var value = ledColors[key];
+            if (key in pixelpusher.controllers) {
+                var ctrl = pixelpusher.controllers[key];
+                ctrl.refresh(toBuffer(value));
+            }
+        });
+
+        //console.log(ledColors);
+
     })
 });
 
@@ -82,7 +91,7 @@ var readMappingFromDisk = function () {
         console.log('Read mapping JSON:');
         console.log(mapping);
     });
-}
+};
 
 var writeMappingToDisk = function () {
 
@@ -93,6 +102,15 @@ var writeMappingToDisk = function () {
             console.log("JSON saved to " + mappingFilename);
         }
     });
-}
+};
+
+var toBuffer = function (ab) {
+    var buffer = new Buffer(ab.byteLength);
+    var view = new Uint8Array(ab);
+    for (var i = 0; i < buffer.length; ++i) {
+        buffer[i] = view[i];
+    }
+    return buffer;
+};
 
 readMappingFromDisk();

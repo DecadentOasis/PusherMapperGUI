@@ -101,7 +101,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     evt.currentTarget.rotation = 360 * (evt.stageY / this.parent.canvas.clientHeight);
                     break;
             }
-            recalculateOcclusion();
+            //recalculateOcclusion();
             $scope.stage.update();
         }
     };
@@ -153,7 +153,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             var y = evt.stageY;
             $scope.lightDragger.x = x;
             $scope.lightDragger.y = y;
-            recalculateOcclusion();
+            //recalculateOcclusion();
             $scope.stage.update();
         }
     };
@@ -170,7 +170,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         led.pixel_no = pixel_no;
         d.addChild(led);
         $scope.leds.push(led);
-    }
+    };
 
     var createCluster = function (d, order, num_arms, pixel_spacing, pixel_size) {
         var pixel_no = 0;
@@ -216,7 +216,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                 pixel_no++;
             }
         }
-    }
+    };
 
     var updateField = function () {
         $scope.stage.removeAllChildren();
@@ -333,30 +333,57 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
     document.onkeydown = keyPressed;
 
-    createjs.Ticker.setInterval(500);
+    createjs.Ticker.setInterval(50);
     createjs.Ticker.addEventListener("tick", handleTick);
 
 
     function handleTick(event) {
         // Actions carried out each tick (aka frame)
         if (!event.paused) {
+            recalculateOcclusion();
             var ledColors = {};
             for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
                 var led = $scope.leds[led_idx];
-                var macAddr = led.parent.mac_addr;
+                var mac_addr = led.parent.mac_addr;
                 var stripNo = led.parent.strip_no;
                 var pixelNo = led.pixel_no;
-                if (!(macAddr in ledColors)) {
-                    ledColors[macAddr] = [];
+                if (!(mac_addr in ledColors)) {
+                    ledColors[mac_addr] = [];
                 }
-                if (!(stripNo in ledColors[macAddr])) {
-                    ledColors[macAddr][stripNo] = [];
+                if (!(stripNo in ledColors[mac_addr])) {
+                    ledColors[mac_addr][stripNo] = [];
                 }
-                var c = led.graphics._fill.style == 'black' ? 0 : 1;
-                ledColors[macAddr][stripNo][pixelNo] = c;
+                ledColors[mac_addr][stripNo][pixelNo] = tinycolor(led.graphics._fill.style);
 
             }
-            mySocket.emit("sc", ledColors);
+            var buf = {};
+            angular.forEach(ledColors, function (value, key) {
+                var num_pixels = null;
+                for (var strip_idx = 0; strip_idx < value.length; strip_idx++) {
+                    if (value[strip_idx] == undefined) {
+                        continue;
+                    }
+                    num_pixels = value[strip_idx].length;
+                    break;
+                }
+                buf[key] = new ArrayBuffer(3 * num_pixels * value.length);
+                for (strip_idx = 0; strip_idx < value.length; strip_idx++) {
+
+                    var strip_colors = value[strip_idx];
+                    if (strip_colors == undefined) {
+                        continue;
+                    }
+                    var c = new Uint8Array(buf[key], num_pixels * strip_idx, num_pixels);
+                    for (var pixel_idx = 0, j = 0; pixel_idx < num_pixels; pixel_idx++, j += 3) {
+                        var pixel_values = strip_colors[pixel_idx].toRgb();
+                        c[j] = pixel_values.r;
+                        c[j + 1] = pixel_values.g;
+                        c[j + 2] = pixel_values.b;
+                    }
+                }
+            });
+
+            mySocket.emit("sc", buf);
 
         }
     }
