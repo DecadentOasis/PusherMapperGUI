@@ -13,7 +13,9 @@ pixelpusher.on('error', function (err) {
 });
 
 pixelpusher.on('discover', function (controller) {
+    console.log('New pusher found: %s', controller.params.macAddress);
     var mac_addr = controller.params.macAddress.replace(/\:/g, '').slice(6);
+
     pushers[mac_addr] = controller.params.pixelpusher;
     io.emit('pushers', pushers);
 });
@@ -64,14 +66,20 @@ io.on('connection', function (socket) {
     socket.on('sc', function (ledColors) {
         Object.keys(ledColors).forEach(function (key) {
             var value = ledColors[key];
-            if (key in pixelpusher.controllers) {
-                var ctrl = pixelpusher.controllers[key];
-                ctrl.refresh(toBuffer(value));
+            var mac_addr = '00:04:a3:' + key.slice(0, 2) + ':' + key.slice(2, 4) + ':' + key.slice(4, 6);
+            if (mac_addr in pixelpusher.controllers) {
+                var ctrl = pixelpusher.controllers[mac_addr];
+                var buf = getStripData(value);
+                ctrl.refresh(buf);
             }
         });
 
         //console.log(ledColors);
 
+    })
+
+    socket.on('error', function (err) {
+        console.error(err.stack);
     })
 });
 
@@ -89,7 +97,6 @@ var readMappingFromDisk = function () {
         }
         mapping = JSON.parse(data);
         console.log('Read mapping JSON:');
-        console.log(mapping);
     });
 };
 
@@ -105,12 +112,37 @@ var writeMappingToDisk = function () {
 };
 
 var toBuffer = function (ab) {
-    var buffer = new Buffer(ab.byteLength);
+    var buffer = new Buffer(ab.length);
     var view = new Uint8Array(ab);
     for (var i = 0; i < buffer.length; ++i) {
         buffer[i] = view[i];
     }
     return buffer;
 };
+
+var getStripData = function (values) {
+    var rendered = [];
+    var num_pixels = null;
+    for (var strip_idx = 0; strip_idx < values.length; strip_idx++) {
+        if (values[strip_idx] == undefined) {
+            continue;
+        }
+        num_pixels = values[strip_idx].length;
+        break;
+    }
+    for (var strip_idx = 0; strip_idx < values.length; strip_idx++) {
+        var ps = new PixelPusher.PixelStrip(strip_idx, num_pixels);
+        if (!(values[strip_idx] == undefined)) {
+            var strip_values = values[strip_idx];
+
+            for (var pixel_idx = 0; pixel_idx < num_pixels; pixel_idx++) {
+                var pixel_value = strip_values[pixel_idx];
+                ps.getPixel(pixel_idx).setColor(pixel_value[0], pixel_value[1], pixel_value[2]);
+            }
+        }
+        rendered.push(ps.getStripData());
+    }
+    return rendered;
+}
 
 readMappingFromDisk();

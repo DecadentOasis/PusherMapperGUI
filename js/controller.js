@@ -353,9 +353,12 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                 if (!(stripNo in ledColors[mac_addr])) {
                     ledColors[mac_addr][stripNo] = [];
                 }
-                ledColors[mac_addr][stripNo][pixelNo] = tinycolor(led.graphics._fill.style);
+                var c = tinycolor(led.graphics._fill.style);
+                var rgb = c.toRgb();
+                ledColors[mac_addr][stripNo][pixelNo] = [rgb.r, rgb.g, rgb.b];
 
             }
+            /**
             var buf = {};
             angular.forEach(ledColors, function (value, key) {
                 var num_pixels = null;
@@ -382,8 +385,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     }
                 }
             });
-
-            mySocket.emit("sc", buf);
+            **/
+            mySocket.emit("sc", ledColors);
 
         }
     }
