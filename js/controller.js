@@ -28,6 +28,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
     var KEYCODE = {
         KEYR: 82,
         KEYM: 77,
+        KEYD: 68,
         ESC: 27
     };
 
@@ -54,12 +55,16 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         var code = evt.keyCode;
         if (code in KEY_MODES) {
             $scope.editMode = KEY_MODES[code];
+        } else {
+            console.log('Unknown keycode: %s', code);
         }
         switch (code) {
             case KEYCODE.ESC:
                 unselectAll();
                 $scope.editMode = MODES.DRAG;
                 break;
+            case KEYCODE.KEYD:
+                deleteTree();
         }
     };
 
@@ -68,6 +73,13 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
             var c = $scope.stage.children[child];
             c.dispatchEvent("cancel");
         }
+    };
+
+    var deleteTree = function () {
+        var mac_addr = $scope.lastSelected.mac_addr;
+        var strip_no = $scope.lastSelected.strip_no;
+        mySocket.emit('delete tree', mac_addr, strip_no);
+        $scope.getMapping();
     };
 
     var treeCancel = function (evt) {

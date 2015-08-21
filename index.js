@@ -32,6 +32,11 @@ app.use('/css', express.static(__dirname + '/css'));
 app.use('/img', express.static(__dirname + '/img'));
 
 
+function getFullMacAddr(key) {
+    var mac_addr = '00:04:a3:' + key.slice(0, 2) + ':' + key.slice(2, 4) + ':' + key.slice(4, 6);
+    return mac_addr;
+}
+
 io.on('connection', function (socket) {
     console.log('a user connected');
     socket.on('disconnect', function () {
@@ -52,6 +57,15 @@ io.on('connection', function (socket) {
         console.log('Tree saved!');
     });
 
+    socket.on('delete tree', function (mac_addr, strip_no) {
+        console.log('Tree deleted. MAC: %s, Strip#: %s', mac_addr, strip_no);
+        mapping[mac_addr].splice(strip_no, 1);
+        if (mapping[mac_addr].length == 0) {
+            delete mapping[mac_addr];
+        }
+        writeMappingToDisk();
+    });
+
     socket.on('list pushers', function () {
         console.log('list pushers called');
         console.log(pushers);
@@ -66,7 +80,7 @@ io.on('connection', function (socket) {
     socket.on('sc', function (ledColors) {
         Object.keys(ledColors).forEach(function (key) {
             var value = ledColors[key];
-            var mac_addr = '00:04:a3:' + key.slice(0, 2) + ':' + key.slice(2, 4) + ':' + key.slice(4, 6);
+            var mac_addr = getFullMacAddr(key);
             if (mac_addr in pixelpusher.controllers) {
                 var ctrl = pixelpusher.controllers[mac_addr];
                 var buf = getStripData(value);
@@ -76,7 +90,7 @@ io.on('connection', function (socket) {
 
         //console.log(ledColors);
 
-    })
+    });
 
     socket.on('error', function (err) {
         console.error(err.stack);
