@@ -11,7 +11,7 @@ app.factory('mySocket', function (socketFactory) {
     return mySocket;
 });
 
-app.controller('IndexCtrl', function ($scope, mySocket) {
+app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
 
     $scope.$on('socket:error', function (ev, data) {
         console.log(data);
@@ -29,6 +29,7 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
         KEYR: 82,
         KEYM: 77,
         KEYD: 68,
+        KEYA: 65,
         ESC: 27
     };
 
@@ -65,6 +66,11 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                 break;
             case KEYCODE.KEYD:
                 deleteTree();
+                break;
+            case KEYCODE.KEYA:
+                $scope.showAddTreeDialog(evt);
+                break;
+
         }
     };
 
@@ -371,8 +377,8 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
 
             }
             /**
-            var buf = {};
-            angular.forEach(ledColors, function (value, key) {
+             var buf = {};
+             angular.forEach(ledColors, function (value, key) {
                 var num_pixels = null;
                 for (var strip_idx = 0; strip_idx < value.length; strip_idx++) {
                     if (value[strip_idx] == undefined) {
@@ -397,11 +403,36 @@ app.controller('IndexCtrl', function ($scope, mySocket) {
                     }
                 }
             });
-            **/
+             **/
             mySocket.emit("sc", ledColors);
 
         }
     }
 
+    $scope.showAddTreeDialog = function (ev) {
+        $mdDialog.show({
+            controller: DialogController,
+            templateUrl: 'html/add_tree.tmpl.html',
+            parent: angular.element(document.body),
+            targetEvent: ev,
+            clickOutsideToClose: true
+        })
+            .then(function (answer) {
+                $scope.status = 'You said the information was "' + answer + '".';
+            }, function () {
+                $scope.status = 'You cancelled the dialog.';
+            });
+    };
 })
 ;
+function DialogController($scope, $mdDialog) {
+    $scope.hide = function () {
+        $mdDialog.hide();
+    };
+    $scope.cancel = function () {
+        $mdDialog.cancel();
+    };
+    $scope.answer = function (answer) {
+        $mdDialog.hide(answer);
+    };
+}
