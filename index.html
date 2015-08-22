@@ -25,16 +25,13 @@
             <md-button class="md-icon-button" aria-label="Settings">
                 <md-icon md-svg-icon="img/icons/menu.svg"></md-icon>
             </md-button>
-            <h2 class="md-flex">Forest Preview</h2>
+            <h2 class="md-flex">Forest Preview. Output {{status}}. Tool: {{modeDesc}}</h2>
         </div>
     </md-toolbar>
     <md-content layout-padding>
         <canvas id="forest-preview" width="800" height="600"></canvas>
         <div class="pusherlist">
-            Detected Pixelpushers:
-            <ul>
-                <li ng-repeat="(key, value) in pushers">{{key}}:{{value}}</li>
-            </ul>
+            {{status.paused}}
         </div>
     </md-content>
 </div>

@@ -54,8 +54,32 @@ io.on('connection', function (socket) {
         fixture.type = type;
         fixture.center = [x, y];
         fixture.rotation = rot;
+        fixture.ignore = false;
         writeMappingToDisk();
-        console.log('Tree saved!');
+    });
+
+    socket.on('ignore strip', function (mac_addr, strip_no) {
+        console.log('Ignore strip requested. MAC: %s, Strip#: %s', mac_addr, strip_no);
+        if (!(mac_addr in mapping)) {
+            console.warn('Could not find MAC %s in map', mac_addr);
+            return;
+        }
+        var mac_mapping = mapping[mac_addr];
+        if (strip_no in mac_mapping) {
+            mac_mapping[strip_no].ignore = true;
+        } else {
+            mac_mapping[strip_no] = {
+                ignore: true
+            }
+        }
+        writeMappingToDisk();
+    });
+
+    socket.on('unignore strip', function (mac_addr, strip_no) {
+        console.log('Un-Ignore strip requested. MAC: %s, Strip#: %s', mac_addr, strip_no);
+        var fixture = mapping[mac_addr][strip_no];
+        fixture.ignore = false;
+        writeMappingToDisk();
     });
 
     socket.on('delete tree', function (mac_addr, strip_no) {

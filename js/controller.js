@@ -17,9 +17,6 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
         console.log(data);
     });
     $scope.$on('socket:pushers', function (ev, data) {
-        angular.forEach(data, function (value, key) {
-            $scope.pushers[key] = value;
-        });
         $scope.pushers = data;
         updateField();
 
@@ -30,6 +27,7 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
         KEYM: 77,
         KEYD: 68,
         KEYA: 65,
+        KEYP: 80,
         ESC: 27
     };
 
@@ -39,6 +37,7 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
         LB_MV: 2
     };
 
+
     var KEY_MODES = [];
 
     KEY_MODES[KEYCODE.KEYR] = MODES.ROTATE;
@@ -47,6 +46,7 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
     var lbSz = 200;
 
     $scope.editMode = MODES.DRAG;
+    $scope.modeDesc = 'drag';
 
     $scope.lastSelected = null;
 
@@ -63,6 +63,7 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
             case KEYCODE.ESC:
                 unselectAll();
                 $scope.editMode = MODES.DRAG;
+                $scope.modeDesc = 'drag';
                 break;
             case KEYCODE.KEYD:
                 deleteTree();
@@ -70,8 +71,18 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
             case KEYCODE.KEYA:
                 $scope.showAddTreeDialog(evt);
                 break;
-
+            case KEYCODE.KEYP:
+                createjs.Ticker.paused = !createjs.Ticker.paused;
+                break;
         }
+        $scope.$apply(function () {
+            if (createjs.Ticker.paused) {
+                $scope.status = 'paused';
+            } else {
+                $scope.status = 'active';
+            }
+
+        });
     };
 
     var unselectAll = function () {
@@ -260,6 +271,9 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
                 var pusher = value;
                 for (var i = pusher.length - 1; i >= 0; i--) {
                     var strip = pusher[i];
+                    if (strip.ignore) {
+                        continue;
+                    }
                     var coords = getRelativeCoords(strip.center, ctx);
                     var x = coords[0];
                     var y = coords[1];
@@ -353,12 +367,13 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
 
     createjs.Ticker.setInterval(50);
     createjs.Ticker.addEventListener("tick", handleTick);
-
+    createjs.Ticker.paused = true;
+    $scope.status = 'paused';
 
     function handleTick(event) {
         // Actions carried out each tick (aka frame)
+        recalculateOcclusion();
         if (!event.paused) {
-            recalculateOcclusion();
             var ledColors = {};
             for (var led_idx = 0; led_idx < $scope.leds.length; led_idx++) {
                 var led = $scope.leds[led_idx];
@@ -376,34 +391,6 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
                 ledColors[mac_addr][stripNo][pixelNo] = [rgb.r, rgb.g, rgb.b];
 
             }
-            /**
-             var buf = {};
-             angular.forEach(ledColors, function (value, key) {
-                var num_pixels = null;
-                for (var strip_idx = 0; strip_idx < value.length; strip_idx++) {
-                    if (value[strip_idx] == undefined) {
-                        continue;
-                    }
-                    num_pixels = value[strip_idx].length;
-                    break;
-                }
-                buf[key] = new ArrayBuffer(3 * num_pixels * value.length);
-                for (strip_idx = 0; strip_idx < value.length; strip_idx++) {
-
-                    var strip_colors = value[strip_idx];
-                    if (strip_colors == undefined) {
-                        continue;
-                    }
-                    var c = new Uint8Array(buf[key], num_pixels * strip_idx, num_pixels);
-                    for (var pixel_idx = 0, j = 0; pixel_idx < num_pixels; pixel_idx++, j += 3) {
-                        var pixel_values = strip_colors[pixel_idx].toRgb();
-                        c[j] = pixel_values.r;
-                        c[j + 1] = pixel_values.g;
-                        c[j + 2] = pixel_values.b;
-                    }
-                }
-            });
-             **/
             mySocket.emit("sc", ledColors);
 
         }
@@ -418,14 +405,75 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
             clickOutsideToClose: true
         })
             .then(function (answer) {
-                $scope.status = 'You said the information was "' + answer + '".';
+                //
             }, function () {
-                $scope.status = 'You cancelled the dialog.';
+                //
             });
     };
-})
-;
-function DialogController($scope, $mdDialog) {
+});
+
+app.filter('range', function () {
+    return function (input, total) {
+        total = parseInt(total);
+        for (var i = 0; i < total; i++)
+            input.push(i);
+        return input;
+    };
+});
+
+app.filter('non_ignored', function () {
+    return function (input, scope) {
+        var retn = [];
+        if (scope.$parent.mapping == undefined) {
+            return;
+        }
+        if (!(scope.key in scope.$parent.mapping)) {
+            retn = input;
+        }
+        for (var strip_no = 0; strip_no < input.length; strip_no++) {
+            if (strip_no in scope.$parent.mapping[scope.key]) {
+                var mapping = scope.$parent.mapping[scope.key];
+                if ((mapping.type == undefined || mapping.center == undefined)
+                    && (mapping.ignore != undefined || mapping.ignore == false)) {
+                    retn.push(input[strip_no]);
+                } else {
+                    continue;
+                }
+            }
+            retn.push(input[strip_no]);
+        }
+        return retn;
+
+    };
+});
+
+function DialogController($scope, $mdDialog, mySocket) {
+    $scope.$on('socket:pushers', function (ev, data) {
+        $scope.pushers = data;
+        console.log(data);
+
+    });
+    $scope.$on('socket:pusher mapping', function (ev, data) {
+        $scope.mapping = data;
+    });
+
+    $scope.getPushers = function () {
+        mySocket.emit('list pushers');
+    };
+
+    $scope.getMapping = function () {
+        mySocket.emit('get mapping');
+    };
+
+    $scope.ignore = function (mac_addr, strip_no) {
+        mySocket.emit('ignore strip', mac_addr, strip_no);
+        $scope.getMapping();
+    };
+
+    $scope.light = function (mac_addr, strip_no) {
+
+    };
+
     $scope.hide = function () {
         $mdDialog.hide();
     };
@@ -435,4 +483,7 @@ function DialogController($scope, $mdDialog) {
     $scope.answer = function (answer) {
         $mdDialog.hide(answer);
     };
+    $scope.pushers = {};
+    $scope.getPushers();
+    $scope.getMapping();
 }

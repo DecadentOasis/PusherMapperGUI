@@ -41,23 +41,15 @@
         {
             "type": "cluster8",
             "center": [
-                0.75,
-                0.8
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.4,
-                0.65
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
                 0.6,
                 0.1
             ]
+        },
+        {
+            "ignore": true
+        },
+        {
+            "ignore": true
         }
     ],
     "987123": [
@@ -258,10 +250,11 @@
         {
             "type": "densecluster8",
             "center": [
-                -0.02,
-                -0.25
+                -0.01,
+                -0.37
             ],
-            "rotation": null
+            "rotation": null,
+            "ignore": false
         }
     ]
 }
