@@ -1,51 +1,6 @@
 {
     "984845": [
         {
-            "type": "cluster6",
-            "center": [
-                0.34,
-                0.36
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.27,
-                0.14
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.1,
-                0.6
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.45,
-                0.3
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.8,
-                0.4
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.6,
-                0.1
-            ]
-        },
-        {
             "ignore": true
         },
         {

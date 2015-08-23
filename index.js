@@ -75,11 +75,15 @@ io.on('connection', function (socket) {
         writeMappingToDisk();
     });
 
-    socket.on('unignore strip', function (mac_addr, strip_no) {
-        console.log('Un-Ignore strip requested. MAC: %s, Strip#: %s', mac_addr, strip_no);
-        var fixture = mapping[mac_addr][strip_no];
-        fixture.ignore = false;
-        writeMappingToDisk();
+    socket.on('light strip', function (mac_addr, strip_no) {
+        console.log('Lighting strip requested. MAC: %s, Strip#: %s', mac_addr, strip_no);
+        mac_addr = getFullMacAddr(mac_addr);
+        if (mac_addr in pixelpusher.controllers) {
+            var ctrl = pixelpusher.controllers[mac_addr];
+            var buf = getStripData(value);
+            ctrl.refresh(buf);
+        }
+
     });
 
     socket.on('delete tree', function (mac_addr, strip_no) {

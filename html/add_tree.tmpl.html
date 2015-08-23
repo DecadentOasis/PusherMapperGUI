@@ -11,9 +11,19 @@
                 <span>
                 <div ng-repeat="(key, value) in pushers" ng-show="mapping">
                     Mac: {{key}}
-                    <div ng-repeat="strip_no in [] | range:value.numberStrips | non_ignored:this">
+                    <div ng-repeat="strip_no in [] | range:value.numberStrips | non_ignored:this" layout="row">
                         Strip: {{strip_no}}
-                        <md-button class="md-raised" ng-click="light(key, strip_no)">Light</md-button>
+                        <md-switch class="md-primary" md-no-ink aria-label="Light" ng-model="data.light">
+                            Light
+                        </md-switch>
+                        <!-- <md-button class="md-raised" ng-click="light(key, strip_no)">Light</md-button> -->
+                        <md-input-container>
+                            <md-select ng-model="ctrl.userState">
+                                <md-option ng-repeat="state in ctrl.states" value="{{state.abbrev}}">{{state.abbrev}}
+                                </md-option>
+                            </md-select>
+                        </md-input-container>
+                        <md-button class="md-raised" ng-click="add(key, strip_no)">Add</md-button>
                         <md-button class="md-raised md-warn" ng-click="ignore(key, strip_no)">
                             Ignore
                         </md-button>
@@ -22,14 +32,5 @@
                 </span>
             </md-whiteframe>
         </md-dialog-content>
-        <div class="md-actions" layout="row">
-            <span flex></span>
-            <md-button ng-click="answer('not useful')">
-                Not Useful
-            </md-button>
-            <md-button ng-click="answer('useful')" style="margin-right:20px;">
-                Useful
-            </md-button>
-        </div>
     </form>
 </md-dialog>
