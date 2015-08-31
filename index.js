@@ -88,10 +88,7 @@ io.on('connection', function (socket) {
 
     socket.on('delete tree', function (mac_addr, strip_no) {
         console.log('Tree deleted. MAC: %s, Strip#: %s', mac_addr, strip_no);
-        mapping[mac_addr].splice(strip_no, 1);
-        if (mapping[mac_addr].length == 0) {
-            delete mapping[mac_addr];
-        }
+        mapping[mac_addr][strip_no] = {ignore: true};
         writeMappingToDisk();
     });
 
