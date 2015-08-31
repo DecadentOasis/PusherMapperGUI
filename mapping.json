@@ -110,5 +110,40 @@
             "rotation": null,
             "ignore": false
         }
+    ],
+    "9833ca": [
+        {
+            "ignore": true
+        },
+        {
+            "ignore": true
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                -0.43,
+                0.27
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                -0.17,
+                -0.62
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                -0.28,
+                -0.16
+            ],
+            "rotation": null,
+            "ignore": false
+        }
     ]
 }
