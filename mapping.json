@@ -6,7 +6,7 @@
                 0.34,
                 0.73
             ],
-            "rotation": null,
+            "rotation": 270.92783505154637,
             "ignore": false
         },
         {
@@ -30,10 +30,10 @@
         {
             "type": "cluster6",
             "center": [
-                0.58,
-                0.82
+                0.55,
+                0.84
             ],
-            "rotation": null,
+            "rotation": 278.35051546391753,
             "ignore": false
         },
         {
@@ -68,19 +68,19 @@
         {
             "type": "cluster6",
             "center": [
-                0.72,
-                0.54
+                0.69,
+                0.76
             ],
-            "rotation": null,
+            "rotation": 87.83505154639175,
             "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                0.91,
-                0.59
+                0.89,
+                0.33
             ],
-            "rotation": null,
+            "rotation": 62.47422680412371,
             "ignore": false
         },
         {
@@ -104,10 +104,10 @@
         {
             "type": "cluster6",
             "center": [
-                0.77,
-                0.75
+                0.81,
+                0.61
             ],
-            "rotation": null,
+            "rotation": 212.7835051546392,
             "ignore": false
         }
     ],
@@ -121,10 +121,10 @@
         {
             "type": "cluster8",
             "center": [
-                -0.43,
-                0.27
+                -0.58,
+                0.3
             ],
-            "rotation": null,
+            "rotation": 310.5154639175258,
             "ignore": false
         },
         {
@@ -133,16 +133,16 @@
                 -0.17,
                 -0.62
             ],
-            "rotation": null,
+            "rotation": 330.92783505154637,
             "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                -0.28,
+                -0.26,
                 -0.16
             ],
-            "rotation": null,
+            "rotation": 220.82474226804126,
             "ignore": false
         }
     ],
@@ -156,10 +156,10 @@
         {
             "type": "cluster8",
             "center": [
-                -0.54,
-                0.59
+                -0.72,
+                0.63
             ],
-            "rotation": null,
+            "rotation": 49.48453608247423,
             "ignore": false
         },
         {
@@ -169,12 +169,12 @@
             "ignore": true
         },
         {
-            "type": "cluster6",
+            "type": "cluster8",
             "center": [
-                -0.65,
-                0.73
+                -0.87,
+                0.82
             ],
-            "rotation": null,
+            "rotation": 71.75257731958763,
             "ignore": false
         }
     ],
@@ -185,17 +185,17 @@
         {
             "type": "cluster6",
             "center": [
-                -0.11,
-                0.48
+                -0.36,
+                0.45
             ],
-            "rotation": null,
+            "rotation": 171.340206185567,
             "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                0.1,
-                0.78
+                0.01,
+                0.82
             ],
             "rotation": null,
             "ignore": false
@@ -203,10 +203,10 @@
         {
             "type": "cluster8",
             "center": [
-                -0.26,
-                0.77
+                -0.41,
+                0.86
             ],
-            "rotation": null,
+            "rotation": 217.7319587628866,
             "ignore": false
         },
         {
@@ -226,7 +226,7 @@
                 -0.73,
                 -0.24
             ],
-            "rotation": null,
+            "rotation": 273.40206185567007,
             "ignore": false
         },
         {
@@ -238,7 +238,7 @@
                 -0.47,
                 -0.76
             ],
-            "rotation": null,
+            "rotation": 314.8453608247423,
             "ignore": false
         },
         {
@@ -262,7 +262,7 @@
                 -0.66,
                 -0.73
             ],
-            "rotation": null,
+            "rotation": 260.4123711340206,
             "ignore": false
         }
     ],
