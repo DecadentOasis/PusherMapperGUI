@@ -1,212 +1,111 @@
 {
-    "984845": [
-        {
-            "ignore": true
-        },
-        {
-            "ignore": true
-        }
-    ],
-    "987123": [
-        {
-            "type": "cluster6",
-            "center": [
-                -0.78,
-                -0.13
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                -0.55,
-                -0.45
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                -0.88,
-                -0.88
-            ]
-        },
+    "984436": [
         {
             "type": "cluster8",
             "center": [
-                -0.5,
-                -0.15
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.82,
-                -0.43
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.53,
-                -0.72
+                0.34,
+                0.73
             ],
-            "rotation": 61.53846153846154
+            "rotation": null,
+            "ignore": false
         },
         {
-            "type": "cluster8",
+            "type": "cluster6",
             "center": [
-                -0.31,
-                -0.31
+                0.33,
+                -0.19
             ],
-            "rotation": null
-        }
-    ],
-    "cde456": [
-        {
-            "type": "cluster6",
-            "center": [
-                -0.45,
-                0.5
-            ]
+            "rotation": null,
+            "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                -0.15,
-                0.25
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                -0.6,
-                0.1
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                -0.3,
-                0.55
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.4,
-                0.8
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.75,
-                -0.81
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.7,
-                0.52
-            ],
-            "rotation": 347.6923076923077
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                -0.1,
-                0.6
-            ]
-        }
-    ],
-    "face00": [
-        {
-            "type": "cluster6",
-            "center": [
-                0.21,
-                -0.37
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.85,
-                -0.25
-            ]
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.35,
-                -0.65
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster6",
-            "center": [
-                0.9,
-                -0.85
-            ]
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.19,
-                -0.14
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.55,
-                -0.8
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.7,
-                -0.6
-            ],
-            "rotation": null
-        },
-        {
-            "type": "cluster8",
-            "center": [
-                0.45,
+                0.57,
                 -0.3
             ],
-            "rotation": null
-        }
-    ],
-    "2c2134": [
-        {
-            "type": "densecluster8",
-            "center": [
-                -0.26,
-                0.08
-            ],
-            "rotation": 203.95604395604394
+            "rotation": null,
+            "ignore": false
         },
         {
-            "type": "densecluster8",
+            "type": "cluster6",
             "center": [
-                0.03,
-                0.21
+                0.58,
+                0.82
             ],
-            "rotation": null
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster8",
+            "center": [
+                0.6,
+                0.27
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster8",
+            "center": [
+                0.35,
+                0.29
+            ],
+            "rotation": null,
+            "ignore": false
         }
     ],
-    "a1b2c3": [
+    "989955": [
         {
-            "type": "densecluster8",
+            "type": "cluster6",
             "center": [
-                -0.01,
-                -0.37
+                0.7,
+                -0.59
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                0.72,
+                0.54
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                0.91,
+                0.59
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                0.76,
+                -0.24
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                0.81,
+                0.22
+            ],
+            "rotation": null,
+            "ignore": false
+        },
+        {
+            "type": "cluster6",
+            "center": [
+                0.77,
+                0.75
             ],
             "rotation": null,
             "ignore": false

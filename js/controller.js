@@ -220,7 +220,7 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
     var createCluster6 = function (d) {
         var order = [0, 2, 3, 1];
         var num_arms = 6;
-        var pixel_spacing = 12;
+        var pixel_spacing = 8;
         var pixel_size = 5;
         createCluster(d, order, num_arms, pixel_spacing, pixel_size);
     };
@@ -319,12 +319,12 @@ app.controller('IndexCtrl', function ($scope, $mdDialog, mySocket) {
     var clusterStyle = {
         cluster6: {
             color: "rgba(91,189,225,0.8)",
-            size: 60,
+            size: 40,
             drawFn: createCluster6
         },
         cluster8: {
             color: "rgba(0,35,200,0.8)",
-            size: 60,
+            size: 50,
             drawFn: createCluster8
         },
         densecluster8: {
