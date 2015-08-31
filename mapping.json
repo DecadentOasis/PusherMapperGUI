@@ -15,16 +15,16 @@
                 0.33,
                 -0.19
             ],
-            "rotation": null,
+            "rotation": 319.17525773195877,
             "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                0.57,
-                -0.3
+                0.46,
+                -0.45
             ],
-            "rotation": null,
+            "rotation": 67.42268041237114,
             "ignore": false
         },
         {
@@ -39,17 +39,17 @@
         {
             "type": "cluster8",
             "center": [
-                0.6,
-                0.27
+                0.55,
+                0.37
             ],
-            "rotation": null,
+            "rotation": 120.61855670103093,
             "ignore": false
         },
         {
             "type": "cluster8",
             "center": [
-                0.35,
-                0.29
+                0.33,
+                0.14
             ],
             "rotation": null,
             "ignore": false
@@ -62,7 +62,7 @@
                 0.7,
                 -0.59
             ],
-            "rotation": null,
+            "rotation": 224.53608247422682,
             "ignore": false
         },
         {
@@ -86,19 +86,19 @@
         {
             "type": "cluster6",
             "center": [
-                0.76,
-                -0.24
+                0.64,
+                -0.26
             ],
-            "rotation": null,
+            "rotation": 176.28865979381442,
             "ignore": false
         },
         {
             "type": "cluster6",
             "center": [
-                0.81,
-                0.22
+                0.83,
+                -0.28
             ],
-            "rotation": null,
+            "rotation": 214.02061855670104,
             "ignore": false
         },
         {
@@ -261,6 +261,17 @@
             "center": [
                 -0.66,
                 -0.73
+            ],
+            "rotation": null,
+            "ignore": false
+        }
+    ],
+    "9849b4": [
+        {
+            "type": "densecluster8",
+            "center": [
+                0,
+                0
             ],
             "rotation": null,
             "ignore": false
